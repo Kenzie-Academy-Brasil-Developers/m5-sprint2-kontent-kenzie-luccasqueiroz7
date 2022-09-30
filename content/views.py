@@ -16,7 +16,6 @@ class ContentView(APIView):
     def post(self, request):
         content = request.data
 
-        # Jogar a logica pro utils
         keys = [
             ("title", str),
             ("module", str),
@@ -38,7 +37,7 @@ class ContentView(APIView):
                     status.HTTP_400_BAD_REQUEST,
                 )
 
-        # Criando apenas com os atributos necessarios
+        # Criando objeto apenas com os atributos necessarios
         content = Content.objects.create(
             title=content["title"],
             module=content["module"],
@@ -67,7 +66,7 @@ class ContentDetailView(APIView):
         return Response(content_dict, status.HTTP_200_OK)
 
     def patch(self, request, content_id):
-        # Começando a fica repetitivo
+
         try:
             content = Content.objects.get(id=content_id)
         except Content.DoesNotExist:
@@ -76,7 +75,6 @@ class ContentDetailView(APIView):
                 status.HTTP_404_NOT_FOUND,
             )
 
-        # Validação de tipo
         for key, value in request.data.items():
             setattr(content, key, value)
 
@@ -86,7 +84,7 @@ class ContentDetailView(APIView):
         return Response(content_dict)
 
     def delete(self, request, content_id):
-        # repetitivo
+
         try:
             content = Content.objects.get(id=content_id)
         except Content.DoesNotExist:
