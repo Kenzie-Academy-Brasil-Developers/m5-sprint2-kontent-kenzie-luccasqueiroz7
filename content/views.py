@@ -37,13 +37,9 @@ class ContentView(APIView):
                 keys_error_return = True
                 keys_error[key[0]] = "missing key"
 
-            else:
-                keys_error[key[0]] = content[key[0]]
-                if type(content[key[0]]) != key[1]:
-                    types_error_return = True
-                    types_error[key[0]] = f"must be a {key[1].__name__}"
-                else:
-                    types_error[key[0]] = content[key[0]]
+            elif type(content[key[0]]) != key[1]:
+                types_error_return = True
+                types_error[key[0]] = f"must be a {key[1].__name__}"
 
         if keys_error_return is True:
             return Response(keys_error, status.HTTP_400_BAD_REQUEST)
