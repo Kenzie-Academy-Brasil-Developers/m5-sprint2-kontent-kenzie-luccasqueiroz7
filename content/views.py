@@ -24,18 +24,31 @@ class ContentView(APIView):
             ("is_active", bool),
         ]
 
+        # Dicionarios que serão utilizados nos retornos dos erros
+        keys_error = {}
+        keys_error_return = False
+        types_error = {}
+        types_error_return = False
+
         # Validação se todas as chaves existem e tem a tipagem certa
         for key in keys:
+
             if key[0] not in content.keys():
-                return Response(
-                    f"missing key: {key[0]}",
-                    status.HTTP_400_BAD_REQUEST,
-                )
-            elif type(content[key[0]]) != key[1]:
-                return Response(
-                    f"{key[0]}: must be a {key[1].__name__}",
-                    status.HTTP_400_BAD_REQUEST,
-                )
+                keys_error_return = True
+                keys_error[key[0]] = "missing key"
+
+            else:
+                keys_error[key[0]] = content[key[0]]
+                if type(content[key[0]]) != key[1]:
+                    types_error_return = True
+                    types_error[key[0]] = f"must be a {key[1].__name__}"
+                else:
+                    types_error[key[0]] = content[key[0]]
+
+        if keys_error_return is True:
+            return Response(keys_error, status.HTTP_400_BAD_REQUEST)
+        elif types_error_return is True:
+            return Response(types_error, status.HTTP_400_BAD_REQUEST)
 
         # Criando objeto apenas com os atributos necessarios
         content = Content.objects.create(
